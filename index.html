@@ -30,8 +30,8 @@
     .opps { display: flex; justify-content: space-around; gap: 8px; flex-wrap: wrap; }
     .opp { text-align: center; }
     .opp-name { font-size: 11px; color: #a8d5a2; margin-bottom: 4px; }
-    .opp-cards { display: flex; gap: 2px; justify-content: center; flex-wrap: wrap; max-width: 120px; }
-    .card-back-mini { width: 28px; height: 40px; background: url('card-back.svg') center/cover; border-radius: 5px; }
+    .opp-cards { display: flex; gap: 2px; justify-content: center; flex-wrap: nowrap; }
+    .card-back-mini { width: 20px; height: 28px; background: url('card-back.svg') center/cover; border-radius: 4px; flex-shrink: 0; }
     .card-back-big  { width: 80px; height: 114px; background: url('card-back.svg') center/cover; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0,0,0,0.4); }
     .center { display: flex; justify-content: center; gap: 28px; padding: 18px 0; }
     .top-card { width: 100px; height: 142px; border-radius: 12px; object-fit: cover; border: 3px solid #ffd700; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
@@ -46,7 +46,8 @@
     .hand-card.selected { transform: translateY(-16px); border-color: #ffd700; box-shadow: 0 0 14px rgba(255,215,0,0.8); }
     .hand-card.danger { border-color: #e74c3c; box-shadow: 0 0 10px rgba(231,76,60,0.6); }
     .hand-card.selected.danger { border-color: #e74c3c; box-shadow: 0 0 16px rgba(231,76,60,1); transform: translateY(-16px); }
-    .action-bar { display: flex; gap: 10px; justify-content: center; padding: 10px 0; flex-wrap: wrap; }
+    .action-bar { display: flex; gap: 10px; justify-content: center; padding: 10px 0; flex-wrap: nowrap; }
+    .action-bar .btn { min-width: 0; flex: 1; max-width: 200px; padding: 14px 16px; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
     .modal { background: #2d5a1b; padding: 24px; border-radius: 16px; max-width: 320px; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
@@ -192,7 +193,14 @@
       render();
     }
     function action_ready() { state.message = ''; state.phase = 'play'; render(); }
-    function action_selectCard(idx) { state.selectedCard = idx; render(); }
+    function action_selectCard(idx) {
+      state.selectedCard = idx;
+      render();
+      requestAnimationFrame(() => {
+        const el = document.querySelector('.hand-card.selected');
+        if (el) el.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      });
+    }
     function action_deselectCard() { state.selectedCard = null; render(); }
     function action_drawCard() {
       reshuffleIfNeeded();
