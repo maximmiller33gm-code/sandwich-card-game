@@ -31,10 +31,10 @@
     .opp { text-align: center; }
     .opp-name { font-size: 11px; color: #a8d5a2; margin-bottom: 4px; }
     .opp-cards { display: flex; gap: 2px; justify-content: center; flex-wrap: wrap; max-width: 120px; }
-    .card-back-mini { width: 22px; height: 32px; background: url('card-back.svg') center/cover; border-radius: 4px; }
-    .card-back-big  { width: 56px; height: 80px; background: url('card-back.svg') center/cover; border-radius: 8px; box-shadow: 2px 2px 8px rgba(0,0,0,0.3); }
-    .center { display: flex; justify-content: center; gap: 24px; padding: 14px 0; }
-    .top-card { width: 72px; height: 102px; border-radius: 10px; object-fit: cover; border: 3px solid #ffd700; box-shadow: 0 4px 16px rgba(0,0,0,0.4); }
+    .card-back-mini { width: 28px; height: 40px; background: url('card-back.svg') center/cover; border-radius: 5px; }
+    .card-back-big  { width: 80px; height: 114px; background: url('card-back.svg') center/cover; border-radius: 10px; box-shadow: 2px 2px 10px rgba(0,0,0,0.4); }
+    .center { display: flex; justify-content: center; gap: 28px; padding: 18px 0; }
+    .top-card { width: 100px; height: 142px; border-radius: 12px; object-fit: cover; border: 3px solid #ffd700; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
     .lbl { font-size: 10px; color: #a8d5a2; text-align: center; margin-top: 4px; }
     .lbl.gold { color: #ffd700; }
     .turn-badge { background: rgba(255,255,255,0.15); padding: 8px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: 700; }
@@ -42,10 +42,10 @@
 
     .hand { display: flex; gap: 6px; justify-content: flex-start; flex-wrap: nowrap; padding: 8px 4px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
     .hand::-webkit-scrollbar { display: none; }
-    .hand-card { width: 56px; height: 80px; flex-shrink: 0; border-radius: 8px; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); cursor: pointer; transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; touch-action: manipulation; }
-    .hand-card.selected { transform: translateY(-14px); border-color: #ffd700; box-shadow: 0 0 12px rgba(255,215,0,0.8); }
-    .hand-card.danger { border-color: #e74c3c; box-shadow: 0 0 8px rgba(231,76,60,0.6); }
-    .hand-card.selected.danger { border-color: #e74c3c; box-shadow: 0 0 14px rgba(231,76,60,1); transform: translateY(-14px); }
+    .hand-card { width: 76px; height: 108px; flex-shrink: 0; border-radius: 10px; object-fit: cover; border: 2px solid rgba(255,255,255,0.3); cursor: pointer; transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s; touch-action: manipulation; }
+    .hand-card.selected { transform: translateY(-16px); border-color: #ffd700; box-shadow: 0 0 14px rgba(255,215,0,0.8); }
+    .hand-card.danger { border-color: #e74c3c; box-shadow: 0 0 10px rgba(231,76,60,0.6); }
+    .hand-card.selected.danger { border-color: #e74c3c; box-shadow: 0 0 16px rgba(231,76,60,1); transform: translateY(-16px); }
     .action-bar { display: flex; gap: 10px; justify-content: center; padding: 10px 0; flex-wrap: wrap; }
 
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 100; }
