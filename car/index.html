@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>BMW X5 — история обслуживания</title>
+  <style>
+    :root {
+      --bg: #f4f5f7;
+      --card: #ffffff;
+      --text: #1b1f24;
+      --muted: #5f6b7a;
+      --line: #e3e6ea;
+      --accent: #1c69d4;
+      --accent-soft: #e4eefb;
+      --ok: #1f8a4c;      --ok-soft: #e3f4ea;
+      --soon: #b87a00;    --soon-soft: #fff3d6;
+      --due: #d9530b;     --due-soft: #ffe8da;
+      --overdue: #c62828; --overdue-soft: #fde3e3;
+      --na: #6b7480;      --na-soft: #eceef1;
+      --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 14px rgba(0,0,0,.05);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0f1216; --card: #181c22; --text: #e8eaed; --muted: #98a2ad; --line: #272c34;
+        --accent: #5b9cff; --accent-soft: #15243a;
+        --ok: #4cc27a; --ok-soft: #13291c;
+        --soon: #e6b245; --soon-soft: #2f2612;
+        --due: #ff8a4c; --due-soft: #33200f;
+        --overdue: #ff6b6b; --overdue-soft: #3a1818;
+        --na: #8a94a0; --na-soft: #22262c;
+        --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+      }
+    }
+    :root[data-theme="dark"] {
+      --bg: #0f1216; --card: #181c22; --text: #e8eaed; --muted: #98a2ad; --line: #272c34;
+      --accent: #5b9cff; --accent-soft: #15243a;
+      --ok: #4cc27a; --ok-soft: #13291c;
+      --soon: #e6b245; --soon-soft: #2f2612;
+      --due: #ff8a4c; --due-soft: #33200f;
+      --overdue: #ff6b6b; --overdue-soft: #3a1818;
+      --na: #8a94a0; --na-soft: #22262c;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 4px 14px rgba(0,0,0,.3);
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 15px; line-height: 1.45;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 16px 16px 64px; }
+
+    /* Шапка */
+    .hero { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+    .hero h1 { margin: 0; font-size: 26px; letter-spacing: -.01em; }
+    .hero .sub { color: var(--muted); font-size: 14px; margin-top: 2px; }
+    .odo { text-align: right; }
+    .odo .km { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+    .odo .upd { color: var(--muted); font-size: 12px; }
+
+    .summary { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; font-size: 13px; font-weight: 600; background: var(--na-soft); color: var(--na); }
+    .pill .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .pill.overdue { background: var(--overdue-soft); color: var(--overdue); }
+    .pill.due { background: var(--due-soft); color: var(--due); }
+    .pill.soon { background: var(--soon-soft); color: var(--soon); }
+    .pill.ok { background: var(--ok-soft); color: var(--ok); }
+
+    nav.toc { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 14px; scrollbar-width: none; }
+    nav.toc::-webkit-scrollbar { display: none; }
+    nav.toc a { white-space: nowrap; padding: 7px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--text); font-size: 13px; }
+
+    section { margin-bottom: 28px; scroll-margin-top: 12px; }
+    h2 { font-size: 18px; margin: 0 0 10px; display: flex; align-items: center; gap: 8px; }
+    h2 .cnt { color: var(--muted); font-weight: 500; font-size: 14px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+    .pad { padding: 14px 16px; }
+
+    /* Статус узлов */
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+    .st { padding: 12px 14px; border-left: 4px solid var(--na); }
+    .st .node { font-weight: 600; }
+    .st .last { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .st .badge { display: inline-block; margin-top: 8px; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: .03em; }
+    .st .note { font-size: 13px; margin-top: 6px; }
+    .st.overdue { border-left-color: var(--overdue); } .st.overdue .badge { background: var(--overdue-soft); color: var(--overdue); }
+    .st.due     { border-left-color: var(--due); }     .st.due .badge     { background: var(--due-soft); color: var(--due); }
+    .st.soon    { border-left-color: var(--soon); }    .st.soon .badge    { background: var(--soon-soft); color: var(--soon); }
+    .st.ok      { border-left-color: var(--ok); }      .st.ok .badge      { background: var(--ok-soft); color: var(--ok); }
+    .st.na      { border-left-color: var(--na); }      .st.na .badge      { background: var(--na-soft); color: var(--na); }
+
+    /* План */
+    ol.plan { margin: 0; padding: 0; list-style: none; counter-reset: p; }
+    ol.plan li { position: relative; padding: 12px 16px 12px 52px; border-top: 1px solid var(--line); counter-increment: p; }
+    ol.plan li:first-child { border-top: 0; }
+    ol.plan li::before { content: counter(p); position: absolute; left: 16px; top: 12px; width: 24px; height: 24px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+    ol.plan .t { font-weight: 600; }
+    ol.plan ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 14px; }
+    ol.plan ul li { padding: 2px 0; border: 0; counter-increment: none; }
+    ol.plan ul li::before { content: none; }
+    ul.plain { margin: 0; padding: 0; list-style: none; }
+    ul.plain li { padding: 10px 16px; border-top: 1px solid var(--line); }
+    ul.plain li:first-child { border-top: 0; }
+
+    /* Журнал */
+    .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .chip { padding: 6px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--text); font-size: 13px; cursor: pointer; }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .search { width: 100%; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--text); font-size: 15px; margin-bottom: 10px; }
+    .search:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+    .visit { display: grid; grid-template-columns: 112px 1fr; margin-bottom: 8px; overflow: hidden; }
+    .visit .when { padding: 12px; border-right: 1px solid var(--line); background: var(--accent-soft); }
+    .visit .when .km { font-weight: 700; font-variant-numeric: tabular-nums; font-size: 15px; }
+    .visit .when .date { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    .visit .when .where { color: var(--muted); font-size: 11px; margin-top: 6px; }
+    .visit .items { padding: 4px 0; }
+    .item { padding: 8px 14px; display: grid; grid-template-columns: 22px 1fr; gap: 8px; border-top: 1px solid var(--line); }
+    .item:first-child { border-top: 0; }
+    .item .ic { font-size: 16px; line-height: 1.3; }
+    .item .work { font-weight: 600; }
+    .item .meta { color: var(--muted); font-size: 13px; margin-top: 2px; }
+    .item .meta b { color: var(--text); font-weight: 600; }
+    .empty { color: var(--muted); padding: 16px; text-align: center; }
+    @media (max-width: 480px) {
+      .visit { grid-template-columns: 1fr; }
+      .visit .when { border-right: 0; border-bottom: 1px solid var(--line); display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; padding: 8px 14px; }
+      .visit .when .where { margin: 0; width: 100%; }
+    }
+
+    /* Таблицы */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { text-align: left; padding: 9px 12px; border-top: 1px solid var(--line); vertical-align: top; }
+    tr:first-child td { border-top: 0; }
+    th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; border-top: 0; }
+    td.k { color: var(--muted); width: 36%; }
+
+    /* Диагностика */
+    .diag { padding: 12px 16px; border-top: 1px solid var(--line); }
+    .diag:first-child { border-top: 0; }
+    .diag .when { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .diag .what { font-weight: 600; margin-top: 2px; }
+    .diag .res { margin-top: 4px; font-size: 14px; }
+
+    /* Отзывы */
+    .recall { padding: 12px 16px; border-top: 1px solid var(--line); display: grid; grid-template-columns: auto 1fr; gap: 10px; }
+    .recall:first-child { border-top: 0; }
+    .recall .id { font-weight: 700; white-space: nowrap; }
+    .recall .id small { display: block; color: var(--muted); font-weight: 500; font-size: 12px; }
+    .recall .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 7px; border-radius: 6px; margin-bottom: 4px; }
+    .recall .tag.done { background: var(--ok-soft); color: var(--ok); }
+    .recall .tag.open { background: var(--soon-soft); color: var(--soon); }
+
+    details summary { cursor: pointer; font-weight: 600; padding: 12px 16px; list-style: none; display: flex; justify-content: space-between; }
+    details summary::after { content: "＋"; color: var(--muted); }
+    details[open] summary::after { content: "－"; }
+    details summary::-webkit-details-marker { display: none; }
+
+    footer { color: var(--muted); font-size: 12px; text-align: center; margin-top: 32px; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div>
+      <h1 id="title"></h1>
+      <div class="sub" id="subtitle"></div>
+    </div>
+    <div class="odo">
+      <div class="km" id="mileage"></div>
+      <div class="upd" id="updated"></div>
+    </div>
+  </header>
+
+  <div class="summary" id="summary"></div>
+
+  <nav class="toc">
+    <a href="#status">Статус</a>
+    <a href="#plan">План</a>
+    <a href="#soon">На горизонте</a>
+    <a href="#log">Журнал</a>
+    <a href="#diag">Диагностика</a>
+    <a href="#recalls">Отзывы</a>
+    <a href="#notes">Примечания</a>
+    <a href="#car">Автомобиль</a>
+  </nav>
+
+  <section id="status">
+    <h2>Статус узлов <span class="cnt" id="status-km"></span></h2>
+    <div class="status-grid" id="status-grid"></div>
+  </section>
+
+  <section id="plan">
+    <h2>План на ближайший визит</h2>
+    <div class="card"><ol class="plan" id="plan-list"></ol></div>
+  </section>
+
+  <section id="soon">
+    <h2>Скоро / на горизонте</h2>
+    <div class="card"><ul class="plain" id="soon-list"></ul></div>
+  </section>
+
+  <section id="log">
+    <h2>Журнал работ <span class="cnt" id="log-cnt"></span></h2>
+    <input class="search" id="search" type="search" placeholder="Поиск: артикул, работа, место…">
+    <div class="filters" id="filters"></div>
+    <div id="log-list"></div>
+  </section>
+
+  <section id="diag">
+    <h2>Диагностика</h2>
+    <div class="card" id="diag-list"></div>
+  </section>
+
+  <section id="recalls">
+    <h2>Отзывы производителя</h2>
+    <div class="card" id="recalls-list"></div>
+  </section>
+
+  <section id="notes">
+    <h2>Примечания</h2>
+    <div class="card"><ul class="plain" id="notes-list"></ul></div>
+  </section>
+
+  <section id="car">
+    <h2>Автомобиль</h2>
+    <div class="card">
+      <details>
+        <summary>Параметры и опции</summary>
+        <table id="specs"></table>
+      </details>
+    </div>
+  </section>
+
+  <footer>Поля со знаком «?» — дата, пробег или место не зафиксированы в журнале.</footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const fmtKm = (km, approx) => km == null ? "?" : (approx ? "~" : "") + km.toLocaleString("ru-RU") + " км";
+
+  // ---- Шапка
+  $("title").textContent = CAR.title;
+  $("subtitle").textContent = CAR.subtitle;
+  $("mileage").textContent = fmtKm(CAR.mileage, CAR.mileageApprox);
+  $("updated").textContent = "обновлено " + CAR.updated;
+  $("status-km").textContent = "на " + fmtKm(CAR.mileage, CAR.mileageApprox);
+
+  // ---- Сводка
+  const LEVELS = { overdue: "Просрочено", due: "Пора", soon: "Скоро", ok: "Норма", na: "Не обслуживается" };
+  const counts = {};
+  STATUS.forEach((s) => (counts[s.level] = (counts[s.level] || 0) + 1));
+  $("summary").innerHTML = ["overdue", "due", "soon", "ok"]
+    .filter((l) => counts[l])
+    .map((l) => `<span class="pill ${l}"><span class="dot"></span>${LEVELS[l]}: ${counts[l]}</span>`)
+    .join("");
+
+  // ---- Статус узлов (сначала проблемные)
+  const order = { overdue: 0, due: 1, soon: 2, ok: 3, na: 4 };
+  $("status-grid").innerHTML = STATUS.slice()
+    .sort((a, b) => order[a.level] - order[b.level])
+    .map((s) => `
+      <div class="card st ${s.level}">
+        <div class="node">${esc(s.node)}</div>
+        <div class="last">Последний раз: ${esc(s.last)}</div>
+        <span class="badge">${LEVELS[s.level]}</span>
+        ${s.note ? `<div class="note">${esc(s.note)}</div>` : ""}
+      </div>`).join("");
+
+  // ---- План
+  $("plan-list").innerHTML = PLAN.map((p) => `
+    <li><div class="t">${esc(p.title)}</div>
+      ${p.details ? `<ul>${p.details.map((d) => `<li>${esc(d)}</li>`).join("")}</ul>` : ""}
+    </li>`).join("");
+
+  // ---- На горизонте
+  $("soon-list").innerHTML = SOON.map((s) => `<li>${esc(s)}</li>`).join("");
+
+  // ---- Журнал
+  let activeCat = "all";
+  let query = "";
+
+  const chips = [["all", "Все", ""]].concat(Object.entries(CATEGORIES).map(([k, v]) => [k, v.label, v.icon]));
+  $("filters").innerHTML = chips.map(([k, label, icon]) =>
+    `<button class="chip${k === "all" ? " active" : ""}" data-cat="${k}">${icon ? icon + " " : ""}${label}</button>`).join("");
+  $("filters").addEventListener("click", (e) => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    activeCat = b.dataset.cat;
+    document.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === b));
+    renderLog();
+  });
+  $("search").addEventListener("input", (e) => { query = e.target.value.trim().toLowerCase(); renderLog(); });
+
+  function renderLog() {
+    const q = query;
+    const rows = LOG.filter((r) => (activeCat === "all" || r.cat === activeCat))
+      .filter((r) => !q || [r.work, r.parts, r.where, r.cost, r.date].some((v) => v && String(v).toLowerCase().includes(q)));
+
+    // Группируем подряд идущие записи с одинаковыми пробегом и датой в один «визит».
+    const visits = [];
+    LOG.forEach((r) => {
+      if (!rows.includes(r)) return;
+      const last = visits[visits.length - 1];
+      if (last && last.km === r.km && last.date === r.date && r.km != null) last.items.push(r);
+      else visits.push({ km: r.km, kmApprox: r.kmApprox, date: r.date, items: [r] });
+    });
+    visits.reverse(); // новые сверху
+
+    $("log-cnt").textContent = rows.length === LOG.length ? `${LOG.length} записей` : `${rows.length} из ${LOG.length}`;
+    if (!visits.length) { $("log-list").innerHTML = `<div class="card empty">Ничего не найдено</div>`; return; }
+
+    $("log-list").innerHTML = visits.map((v) => {
+      const where = v.items.map((i) => i.where).find(Boolean);
+      return `
+      <div class="card visit">
+        <div class="when">
+          <div class="km">${fmtKm(v.km, v.kmApprox)}</div>
+          <div class="date">${esc(v.date ?? "дата ?")}</div>
+          ${where ? `<div class="where">${esc(where)}</div>` : ""}
+        </div>
+        <div class="items">
+          ${v.items.map((i) => {
+            const c = CATEGORIES[i.cat] || CATEGORIES.other;
+            const meta = [];
+            if (i.parts) meta.push(`<b>Детали:</b> ${esc(i.parts)}`);
+            if (i.where && i.where !== where) meta.push(`<b>Где:</b> ${esc(i.where)}`);
+            if (i.cost) meta.push(`<b>Стоимость:</b> ${esc(i.cost)}`);
+            return `<div class="item"><div class="ic" title="${esc(c.label)}">${c.icon}</div>
+              <div><div class="work">${esc(i.work)}</div>${meta.length ? `<div class="meta">${meta.join(" · ")}</div>` : ""}</div></div>`;
+          }).join("")}
+        </div>
+      </div>`;
+    }).join("");
+  }
+  renderLog();
+
+  // ---- Диагностика
+  $("diag-list").innerHTML = DIAG.map((d) => `
+    <div class="diag">
+      <div class="when">${esc(d.date)} · ${fmtKm(d.km, d.kmApprox)}</div>
+      <div class="what">${esc(d.what)}</div>
+      <div class="res">${esc(d.result)}</div>
+    </div>`).join("");
+
+  // ---- Отзывы
+  $("recalls-list").innerHTML = RECALLS.map((r) => `
+    <div class="recall">
+      <div class="id">${esc(r.id)}<small>${esc(r.year)}</small></div>
+      <div><span class="tag ${r.done ? "done" : "open"}">${r.done ? "Выполнено" : "Не проверено"}</span><div>${esc(r.text)}</div></div>
+    </div>`).join("");
+
+  // ---- Примечания
+  $("notes-list").innerHTML = NOTES.map((n) => `<li>${esc(n)}</li>`).join("");
+
+  // ---- Автомобиль
+  $("specs").innerHTML = CAR.specs.map(([k, v]) => `<tr><td class="k">${esc(k)}</td><td>${esc(v)}</td></tr>`).join("");
+})();
+</script>
+</body>
+</html>
